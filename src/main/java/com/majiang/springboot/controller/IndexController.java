@@ -19,7 +19,7 @@ public class IndexController {
     //request里可以获取cookie信息,用来拿取存入cookie的token
     public String index(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
-        if(null!=cookies){
+        if(null!=cookies&&cookies.length!=0){
             for(Cookie cookie:cookies){
                 //判断cookie中是否有key为token的字段
                 if("token".equals(cookie.getName())){

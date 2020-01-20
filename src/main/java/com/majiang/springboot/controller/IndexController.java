@@ -1,13 +1,17 @@
 package com.majiang.springboot.controller;
 
+import com.majiang.springboot.dto.QuestionDTO;
 import com.majiang.springboot.mapper.UserMapper;
 import com.majiang.springboot.model.User;
+import com.majiang.springboot.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -15,9 +19,12 @@ public class IndexController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private QuestionService questionService;
+
     @RequestMapping({"/","index.html"})
     //request里可以获取cookie信息,用来拿取存入cookie的token
-    public String index(HttpServletRequest request){
+    public String index(HttpServletRequest request, Model model){
         Cookie[] cookies = request.getCookies();
         if(null!=cookies&&cookies.length!=0){
             for(Cookie cookie:cookies){
@@ -37,6 +44,8 @@ public class IndexController {
                 }
             }
         }
+        List<QuestionDTO> questionDTOList = questionService.list();
+        model.addAttribute("questionDTOList",questionDTOList);
         return "index";
     }
 }

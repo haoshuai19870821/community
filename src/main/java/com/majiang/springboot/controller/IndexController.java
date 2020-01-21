@@ -1,5 +1,6 @@
 package com.majiang.springboot.controller;
 
+import com.majiang.springboot.dto.PaginationDTO;
 import com.majiang.springboot.dto.QuestionDTO;
 import com.majiang.springboot.mapper.UserMapper;
 import com.majiang.springboot.model.User;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +26,10 @@ public class IndexController {
 
     @RequestMapping({"/","index.html"})
     //request里可以获取cookie信息,用来拿取存入cookie的token
-    public String index(HttpServletRequest request, Model model){
+    public String index(HttpServletRequest request,
+                        Model model,
+                        @RequestParam(name="page",defaultValue = "1") Integer page,
+                        @RequestParam(name="size",defaultValue = "2") Integer size){
         Cookie[] cookies = request.getCookies();
         if(null!=cookies&&cookies.length!=0){
             for(Cookie cookie:cookies){
@@ -44,8 +49,8 @@ public class IndexController {
                 }
             }
         }
-        List<QuestionDTO> questionDTOList = questionService.list();
-        model.addAttribute("questionDTOList",questionDTOList);
+        PaginationDTO pagination = questionService.list(page, size);
+        model.addAttribute("pagination",pagination);
         return "index";
     }
 }
